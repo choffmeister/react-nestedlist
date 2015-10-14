@@ -1,4 +1,5 @@
 import * as tree from './utils/treeUtils';
+import Immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import NestedListItem from './NestedListItem';
 import React, {PropTypes} from 'react';
@@ -26,7 +27,7 @@ export default class NestedList extends React.Component {
 
   onReorder(source, target, level, preview = false) {
     const newData = tree.reorder(this.data, source, target, level);
-    if (!preview || newData !== this.data) {
+    if (!preview || !Immutable.is(newData, this.data)) {
       const validation = !this.props.validate || this.props.validate(tree.unwrap(newData));
       if (validation === true) {
         if (!preview) {
