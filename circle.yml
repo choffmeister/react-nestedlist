@@ -4,6 +4,7 @@ machine:
 
 test:
   override:
+    - npm test -- --coverage
     - xvfb-run -a npm test -- --chrome --firefox
     - npm run dist
   post:

@@ -28,10 +28,10 @@ describe('NestedList', function () {
     expect(itemDivs).to.have.length(4);
     expect(itemDivs.every(itemDiv => listDiv.contains(itemDiv))).to.equal(true);
 
-    expect(itemDivs[0].innerText).to.equal('1');
-    expect(itemDivs[1].innerText).to.equal('2');
-    expect(itemDivs[2].innerText).to.equal('3');
-    expect(itemDivs[3].innerText).to.equal('4');
+    expect(itemDivs[0].innerHTML).to.equal('1');
+    expect(itemDivs[1].innerHTML).to.equal('2');
+    expect(itemDivs[2].innerHTML).to.equal('3');
+    expect(itemDivs[3].innerHTML).to.equal('4');
   });
 
   it('swaps two neighbors (top down)', function () {
@@ -119,14 +119,14 @@ describe('NestedList', function () {
     TestUtils.Simulate.dragOver(itemDivs[0]);
 
     const itemDivsPreview = TestUtils.scryRenderedDOMComponentsWithClass(nestedList, 'list-item');
-    expect(itemDivsPreview[0].innerText).to.equal('2');
-    expect(itemDivsPreview[1].innerText).to.equal('1');
+    expect(itemDivsPreview[0].innerHTML).to.equal('2');
+    expect(itemDivsPreview[1].innerHTML).to.equal('1');
 
     TestUtils.Simulate.dragEnd(itemDivs[0]);
 
     const itemDivsAfterReset = TestUtils.scryRenderedDOMComponentsWithClass(nestedList, 'list-item');
-    expect(itemDivsAfterReset[0].innerText).to.equal('1');
-    expect(itemDivsAfterReset[1].innerText).to.equal('2');
+    expect(itemDivsAfterReset[0].innerHTML).to.equal('1');
+    expect(itemDivsAfterReset[1].innerHTML).to.equal('2');
 
     expect(onDataChange).to.not.have.been.called();
   });

@@ -84,8 +84,9 @@ npm install
 # run development server at http://localhost:8082
 npm start
 
-# run tests (will always run in PhantomJS, but additional browsers are supported)
+# run tests (per default in PhantomJS without coverage report)
 npm test
+npm test -- --coverage
 npm test -- --chrome --firefox
 
 # run tests in dev mode (no coverage report, source mapped stacktraces, continuous running)
