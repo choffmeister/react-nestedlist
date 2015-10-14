@@ -59,7 +59,7 @@ export default class NestedListItem extends React.Component {
 
   onDrop(event) {
     const {source, target, level} = this.extractReorderParameters(event);
-    this.props.onReorder(source, target, level, false);
+    this.props.onReorder(source, target, level);
   }
 
   render() {

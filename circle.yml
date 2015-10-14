@@ -4,9 +4,18 @@ machine:
 
 test:
   override:
+    - npm test -- --coverage
     - xvfb-run -a npm test -- --chrome --firefox
     - npm run dist
   post:
     # store testresult and coverage reports
     - cp -r reports/testresults/* $CIRCLE_TEST_REPORTS
     - cp -r reports/coverage $CIRCLE_ARTIFACTS/coverage
+
+deployment:
+  npm:
+    branch: master
+    commands:
+      - echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
+      - npm run dist
+      - npm publish
