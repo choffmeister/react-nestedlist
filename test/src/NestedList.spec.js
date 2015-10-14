@@ -221,10 +221,10 @@ describe('NestedList', function () {
 
     TestUtils.Simulate.dragStart(itemDivs[1], {
       dataTransfer: {setData: () => {}, setDragImage: () => {}},
-      nativeEvent: {clientX: 10}
+      clientX: 10
     });
     TestUtils.Simulate.drop(itemDivs[1], {
-      nativeEvent: {clientX: 30}
+      clientX: 30
     });
 
     expect(onDataChange).to.have.been.called.once();
@@ -254,10 +254,10 @@ describe('NestedList', function () {
 
     TestUtils.Simulate.dragStart(itemDivs[1], {
       dataTransfer: {setData: () => {}, setDragImage: () => {}},
-      nativeEvent: {clientX: 30}
+      clientX: 30
     });
     TestUtils.Simulate.drop(itemDivs[1], {
-      nativeEvent: {clientX: 10}
+      clientX: 10
     });
 
     expect(onDataChange).to.have.been.called.once();
@@ -280,10 +280,10 @@ describe('NestedList', function () {
 
     TestUtils.Simulate.dragStart(itemDivs[0], {
       dataTransfer: {setData: () => {}, setDragImage: () => {}},
-      nativeEvent: {clientX: 30}
+      clientX: 30
     });
     TestUtils.Simulate.drop(itemDivs[1], {
-      nativeEvent: {clientX: 10}
+      clientX: 10
     });
 
     expect(onDataChange).to.not.have.been.called();

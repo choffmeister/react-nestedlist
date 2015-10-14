@@ -23,7 +23,7 @@ export default class NestedListItem extends React.Component {
   }
 
   extractReorderParameters(event) {
-    const {clientX} = event.nativeEvent;
+    const {clientX} = event;
     const {source} = dragData;
     const target = this.props.item;
 
@@ -39,7 +39,7 @@ export default class NestedListItem extends React.Component {
   onDragStart(event) {
     dragData = {
       source: this.props.item,
-      startMouseX: event.nativeEvent.clientX,
+      startMouseX: event.clientX,
       startLevel: this.props.item.get('__level')
     };
     event.dataTransfer.setData('Url', '#');
