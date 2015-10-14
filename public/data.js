@@ -14,9 +14,7 @@ export default Immutable.fromJS([
       {
         _id: uuid(),
         label: 'Page 1a',
-        children: [
-
-        ]
+        children: []
       },
       {
         _id: uuid(),
