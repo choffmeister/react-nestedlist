@@ -1,8 +1,12 @@
 # react-nestedlist
 
-[![build](https://img.shields.io/circleci/project/choffmeister/react-nestedlist.svg)](https://circleci.com/gh/choffmeister/react-nestedlist)
+[![build](https://img.shields.io/circleci/project/choffmeister/react-nestedlist/develop.svg)](https://circleci.com/gh/choffmeister/react-nestedlist)
 [![npm](https://img.shields.io/npm/v/react-nestedlist.svg)](https://www.npmjs.com/package/react-nestedlist)
 [![license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](http://opensource.org/licenses/MIT)
+
+## Livedemo
+
+For a livedemo click [here](http://choffmeister.github.io/react-nestedlist/).
 
 ## Usage
 

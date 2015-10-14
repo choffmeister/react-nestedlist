@@ -3,7 +3,7 @@ import uuid from './uuid';
 
 export default Immutable.fromJS([
   {
-    _id: uuid(),
+    _id: 'startpage',
     label: 'Startpage',
     children: []
   },

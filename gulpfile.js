@@ -12,11 +12,28 @@ gulp.task('lint-javascript', function () {
 });
 gulp.task('lint', ['lint-javascript']);
 
+gulp.task('build', function (done) {
+  var del = require('del');
+  var webpack = require('webpack');
+  var webpackConfig = require('./webpack.config.js');
+
+  del.sync('./build');
+
+  var compiler = webpack(webpackConfig);
+  compiler.run(function (err) {
+    if (!err) {
+      gulpUtil.log('Build to ' + compiler.outputPath);
+    } else {
+      done(err);
+    }
+  });
+});
+
 gulp.task('dist', function () {
   var del = require('del');
   var gulpBabel = require('gulp-babel');
 
-  del.sync('./dist/**/*');
+  del.sync('./dist');
 
   return gulp.src('./src/**/*.{js,jsx}')
     .pipe(gulpBabel())

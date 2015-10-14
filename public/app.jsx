@@ -13,8 +13,13 @@ class App extends React.Component {
     this.validateTree = this.validateTree.bind(this);
 
     this.state = {
-      tree: data
+      tree: data,
+      validationError: null
     };
+  }
+
+  shouldComponentUpdate(nextState) {
+    return nextState.tree !== this.state.tree || nextState.validationError !== this.state.validationError;
   }
 
   updateTree(newTree) {
@@ -23,29 +28,45 @@ class App extends React.Component {
   }
 
   validateTree(tree) {
-    if (tree.count() === 0) return 'Navigation must not be empty';
-    if (tree.first().get('label') !== 'Startpage') return 'Startpage must be first';
-    if (tree.first().get('children').count() > 0) return 'Startpage cannot have subpages';
+    const result = () => {
+      if (tree.count() === 0) return 'Navigation must not be empty';
+      if (tree.first().get('_id') !== 'startpage') return 'Startpage must be first';
+      if (tree.first().get('children').count() > 0) return 'Startpage cannot have subpages';
 
-    return true;
+      return true;
+    }();
+
+    if (result === true) {
+      this.setState({validationError: null});
+      return true;
+    } else {
+      this.setState({validationError: result});
+      return result;
+    }
   }
 
   render() {
     return (
-      <div>
-        <NestedList
-          data={this.state.tree}
-          onDataChange={this.updateTree}
-          validate={this.validateTree}
-          className="list">
-          {(item, level, preview) => (
-            <div
-              style={{paddingLeft: (level - 1) * 20 + 10}}
-              className={'list-item' + (preview ? ' list-item-preview' : '')}>
-              {item.get('label')}
-            </div>
-          )}
-        </NestedList>
+      <div id="workspace">
+        <div>
+          <NestedList
+            data={this.state.tree}
+            onDataChange={this.updateTree}
+            validate={this.validateTree}
+            className="list">
+            {(item, level, preview) => (
+              <div
+                style={{paddingLeft: (level - 1) * 20 + 10}}
+                className={'list-item' + (preview ? ' list-item-preview' : '')}>
+                {item.get('label')}
+              </div>
+            )}
+          </NestedList>
+        </div>
+        <div>
+          {this.state.validationError ? <div className="label label-danger">{this.state.validationError}</div> : null}
+          <pre>{JSON.stringify(this.state.tree.toJS(), true, 2)}</pre>
+        </div>
       </div>
     );
   }
