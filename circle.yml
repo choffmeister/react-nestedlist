@@ -1,0 +1,12 @@
+machine:
+  node:
+    version: 4.1.0
+
+test:
+  override:
+    - xvfb-run -a npm test -- --chrome --firefox
+    - npm run dist
+  post:
+    # store testresult and coverage reports
+    - cp -r reports/testresults/* $CIRCLE_TEST_REPORTS
+    - cp -r reports/coverage $CIRCLE_ARTIFACTS/coverage

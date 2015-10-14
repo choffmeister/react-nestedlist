@@ -1,0 +1,9 @@
+# Build target
+dist/
+
+# Test results
+reports/
+
+# Node
+node_modules/
+npm-debug.log
