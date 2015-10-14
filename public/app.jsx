@@ -9,9 +9,17 @@ class App extends React.Component {
   constructor() {
     super();
 
+    this.updateTree = this.updateTree.bind(this);
+    this.validateTree = this.validateTree.bind(this);
+
     this.state = {
       tree: data
     };
+  }
+
+  updateTree(newTree) {
+    console.log('Updated tree', newTree.toJS()); // eslint-disable-line no-console
+    this.setState({tree: newTree});
   }
 
   validateTree(tree) {
@@ -27,7 +35,7 @@ class App extends React.Component {
       <div>
         <NestedList
           data={this.state.tree}
-          onDataChange={tree => this.setState({tree})}
+          onDataChange={this.updateTree}
           validate={this.validateTree}
           className="list">
           {(item, level, preview) => (
