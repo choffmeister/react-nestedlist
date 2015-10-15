@@ -68,8 +68,8 @@ export function unwrap(nodes) {
   return nodes.get(0).get('children');
 }
 
-export function remove(indexedNodes, indexGlobal) {
-  return filter(indexedNodes, n => n.get('__indexGlobal') !== indexGlobal);
+export function remove(indexedNodes, node) {
+  return filter(indexedNodes, n => n.get('_id') !== node.get('_id'));
 }
 
 export function insert(indexedNodes, node, parent, indexLocal) {
@@ -112,7 +112,7 @@ export const reorder = cachedFunction(function (inputTree, originalSource, origi
   // remove source item and recalculate the indices
   // from this point an the reordering is handled like an insertion
   // as additional information we know if the source item is moved downwards or upwards
-  const withoutSource = remove(inputTree, originalSourceIndex);
+  const withoutSource = remove(inputTree, source);
   const reindexedTree = index(withoutSource);
 
   // if moving items with subitems, we have to limit the target index
