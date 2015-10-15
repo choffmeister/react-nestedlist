@@ -288,4 +288,39 @@ describe('NestedList', function () {
 
     expect(onDataChange).to.not.have.been.called();
   });
+
+  it('does not move between lists', function () {
+    const data1 = Immutable.fromJS([
+      {_id: 1, children: []},
+      {_id: 2, children: []}
+    ]);
+    const onDataChange1 = chai.spy();
+    const data2 = Immutable.fromJS([
+      {_id: 3, children: []},
+      {_id: 4, children: []}
+    ]);
+    const onDataChange2 = chai.spy();
+
+    const nestedList = TestUtils.renderIntoDocument(
+      <div>
+        <NestedList className="list1" data={data1} onDataChange={onDataChange2}>
+          {item => <div className="list-item1">{item.get('_id')}</div>}
+        </NestedList>
+        <NestedList className="list2" data={data2} onDataChange={onDataChange2}>
+          {item => <div className="list-item2">{item.get('_id')}</div>}
+        </NestedList>
+      </div>
+    );
+
+    const item1Divs = nestedList.getElementsByClassName('list-item1');
+    const item2Divs = nestedList.getElementsByClassName('list-item2');
+
+    TestUtils.Simulate.dragStart(item1Divs[0], {
+      dataTransfer: {setData: () => {}, setDragImage: () => {}}
+    });
+    TestUtils.Simulate.drop(item2Divs[0]);
+
+    expect(onDataChange1).to.not.have.been.called();
+    expect(onDataChange2).to.not.have.been.called();
+  });
 });
