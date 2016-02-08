@@ -1,4 +1,4 @@
-import * as tree from './utils/treeUtils';
+import * as nestedListUtils from './utils/nestedListUtils';
 import Immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import React, {PropTypes} from 'react';
@@ -16,9 +16,6 @@ export default class NestedListItem extends React.Component {
 
   constructor() {
     super();
-    this.extractReorderParameters = this.extractReorderParameters.bind(this);
-    this.onReorder = this.onReorder.bind(this);
-    this.onReorderReset = this.onReorderReset.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -26,15 +23,15 @@ export default class NestedListItem extends React.Component {
   }
 
   extractReorderParameters(event) {
-    const {clientX} = event;
+    const {pageX} = event;
     const {sourceList, sourceItem} = dragData;
     const [targetList, targetItem] = [this.props.list, this.props.item];
 
     if (sourceItem.get('_id') !== targetItem.get('_id')) {
-      dragData.startLevel = this.props.item.get('__level');
-      dragData.startMouseX = clientX;
+      dragData.startLevel = Math.min(this.props.item.get('__level'), sourceItem.get('__level'));
+      dragData.startMouseX = pageX;
     }
-    const mouseDeltaX = clientX - dragData.startMouseX;
+    const mouseDeltaX = pageX - dragData.startMouseX;
 
     return {
       sourceList,
@@ -47,35 +44,38 @@ export default class NestedListItem extends React.Component {
 
   onReorder(sourceList, targetList, sourceItem, targetItem, level, preview = false) {
     if (sourceList === targetList) {
-      const newData = tree.reorder(sourceList.data, sourceItem, targetItem, level);
-      if (!preview || !Immutable.is(newData, sourceList.data)) {
-        const validation = !sourceList.props.validate || sourceList.props.validate(tree.unwrap(newData));
-        if (validation === true) {
-          if (!preview) {
-            sourceList.setState({data: undefined, previewId: undefined});
-            sourceList.props.onDataChange(tree.unwrap(tree.unindex(newData)));
-          } else {
-            sourceList.setState({data: newData, previewId: sourceItem.get('_id')});
+      const newData = nestedListUtils.reorder(sourceList.state.data, sourceItem, targetItem, level);
+      const validation = !sourceList.props.validate || sourceList.props.validate(nestedListUtils.unwrap(newData), nestedListUtils.unwrap(sourceList.state.data));
+
+      if (preview) {
+        if (!Immutable.is(newData, sourceList.state.data)) {
+          if (validation === true) {
+            sourceList.preview(newData, sourceItem.get('_id'));
           }
         }
+      } else {
+        sourceList.persist(validation === true ? newData : undefined);
       }
     }
   }
 
   onReorderReset(sourceList, targetList) {
-    sourceList.setState({data: undefined, previewId: undefined});
-    targetList.setState({data: undefined, previewId: undefined});
+    sourceList.reset();
+    targetList.reset();
   }
 
   onDragStart(event) {
     dragData = {
       sourceList: this.props.list,
       sourceItem: this.props.item,
-      startMouseX: event.clientX,
+      startMouseX: event.pageX,
       startLevel: this.props.item.get('__level')
     };
-    event.dataTransfer.setData('Url', '#');
-    event.dataTransfer.setDragImage(document.createElement('div'), 0, 0);
+
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('Url', '#');
+      event.dataTransfer.setDragImage(document.createElement('div'), 0, 0);
+    }
   }
 
   onDragOver(event) {
