@@ -22,7 +22,7 @@ export function filter(nodes, predicate, level = 0) {
     .map(node => node.set('children', filter(node.get('children'), predicate, level + 1)));
 }
 
-export function find(nodes, criteria){
+export function find(nodes, criteria) {
   return nodes.reduce((result, node) => {
     return result || (criteria(node) ? node : find(node.get('children'), criteria));
   }, undefined);
@@ -68,8 +68,8 @@ export function unwrap(nodes) {
   return nodes.get(0).get('children');
 }
 
-export function remove(indexedNodes, indexGlobal) {
-  return filter(indexedNodes, n => n.get('__indexGlobal') !== indexGlobal);
+export function remove(indexedNodes, node) {
+  return filter(indexedNodes, n => n.get('_id') !== node.get('_id'));
 }
 
 export function insert(indexedNodes, node, parent, indexLocal) {
@@ -80,16 +80,16 @@ export function insert(indexedNodes, node, parent, indexLocal) {
         .push(node)
         .concat(n.get('children').slice(indexLocal));
       return n.set('children', newChildren);
-    } else {
-      return n;
     }
+
+    return n;
   });
 }
 
 export function equals(nodes1, nodes2) {
   if (nodes1.count() !== nodes2.count()) return false;
 
-  for (let i = 0, l = nodes1.count(); i < l; i++) {
+  for (let i = 0, l = nodes1.count(); i < l; i = i + 1) {
     const node1 = nodes1.get(i);
     const node2 = nodes2.get(i);
 
@@ -101,23 +101,22 @@ export function equals(nodes1, nodes2) {
 }
 
 /**
- * Expects and indexed tree and returns an indexed tree.
+ * Expects an indexed tree and returns an indexed tree.
  */
 export const reorder = cachedFunction(function (inputTree, originalSource, originalTarget, level) {
   // find the linear indices of the source item (dragged) and target item (dropped onto)
   const source = find(inputTree, n => n.get('_id') === originalSource.get('_id'));
-  const originalSourceIndex = source.get('__indexGlobal');
   const originalTargetIndex = find(inputTree, n => n.get('_id') === originalTarget.get('_id')).get('__indexGlobal');
 
   // remove source item and recalculate the indices
   // from this point an the reordering is handled like an insertion
   // as additional information we know if the source item is moved downwards or upwards
-  const withoutSource = remove(inputTree, originalSourceIndex);
+  const withoutSource = remove(inputTree, source);
   const reindexedTree = index(withoutSource);
 
   // if moving items with subitems, we have to limit the target index
   const targetIndex = Math.min(
-    originalSourceIndex < originalTargetIndex - 1 ? originalTargetIndex - 1 : originalTargetIndex,
+    originalTargetIndex,
     inputTree.get(0).get('__totalChildrenCount') - source.get('__totalChildrenCount')
   );
 

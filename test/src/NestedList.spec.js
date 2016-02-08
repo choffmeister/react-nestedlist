@@ -55,11 +55,16 @@ describe('NestedList', function () {
 
     TestUtils.Simulate.dragStart(itemDivs[0], {
       dataTransfer: {
-        setData: () => {},
-        setDragImage: () => {}
-      }
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
     });
-    TestUtils.Simulate.drop(itemDivs[1]);
+    TestUtils.Simulate.drop(itemDivs[1], {
+      pageX: 30
+    });
 
     expect(onDataChange).to.have.been.called.once();
   });
@@ -85,11 +90,16 @@ describe('NestedList', function () {
 
     TestUtils.Simulate.dragStart(itemDivs[1], {
       dataTransfer: {
-        setData: () => {},
-        setDragImage: () => {}
-      }
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
     });
-    TestUtils.Simulate.drop(itemDivs[0]);
+    TestUtils.Simulate.drop(itemDivs[0], {
+      pageX: 30
+    });
 
     expect(onDataChange).to.have.been.called.once();
   });
@@ -111,8 +121,10 @@ describe('NestedList', function () {
 
     TestUtils.Simulate.dragStart(itemDivs[0], {
       dataTransfer: {
-        setData: () => {},
-        setDragImage: () => {}
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
       }
     });
     TestUtils.Simulate.dragOver(itemDivs[1]);
@@ -133,16 +145,20 @@ describe('NestedList', function () {
 
   it('moves with subitems 1', function () {
     const data = Immutable.fromJS([
-      {_id: 1, children: [
-        {_id: 2, children: []}
-      ]},
+      {
+        _id: 1, children: [
+          {_id: 2, children: []}
+        ]
+      },
       {_id: 3, children: []}
     ]);
     const expectedData = Immutable.fromJS([
       {_id: 3, children: []},
-      {_id: 1, children: [
-        {_id: 2, children: []}
-      ]}
+      {
+        _id: 1, children: [
+          {_id: 2, children: []}
+        ]
+      }
     ]);
     const onDataChange = chai.spy(newData => expect(Immutable.is(newData, expectedData)).to.equal(true));
 
@@ -156,27 +172,36 @@ describe('NestedList', function () {
 
     TestUtils.Simulate.dragStart(itemDivs[0], {
       dataTransfer: {
-        setData: () => {},
-        setDragImage: () => {}
-      }
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
     });
-    TestUtils.Simulate.drop(itemDivs[1]);
+    TestUtils.Simulate.drop(itemDivs[1], {
+      pageX: 30
+    });
 
     expect(onDataChange).to.have.been.called.once();
   });
 
   it('moves with subitems 2', function () {
     const data = Immutable.fromJS([
-      {_id: 1, children: [
-        {_id: 2, children: []}
-      ]},
+      {
+        _id: 1, children: [
+          {_id: 2, children: []}
+        ]
+      },
       {_id: 3, children: []}
     ]);
     const expectedData = Immutable.fromJS([
       {_id: 3, children: []},
-      {_id: 1, children: [
-        {_id: 2, children: []}
-      ]}
+      {
+        _id: 1, children: [
+          {_id: 2, children: []}
+        ]
+      }
     ]);
     const onDataChange = chai.spy(newData => expect(Immutable.is(newData, expectedData)).to.equal(true));
 
@@ -190,11 +215,99 @@ describe('NestedList', function () {
 
     TestUtils.Simulate.dragStart(itemDivs[0], {
       dataTransfer: {
-        setData: () => {},
-        setDragImage: () => {}
-      }
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
     });
-    TestUtils.Simulate.drop(itemDivs[2]);
+    TestUtils.Simulate.drop(itemDivs[2], {
+      pageX: 30
+    });
+
+    expect(onDataChange).to.have.been.called.once();
+  });
+
+  it('moves with subitems 3', function () {
+    const data = Immutable.fromJS([
+      {_id: 1, children: []},
+      {
+        _id: 2, children: [
+          {_id: 3, children: []}
+        ]
+      }
+    ]);
+    const expectedData = Immutable.fromJS([
+      {_id: 1, children: []},
+      {_id: 3, children: []},
+      {_id: 2, children: []}
+    ]);
+    const onDataChange = chai.spy(newData => expect(Immutable.is(newData, expectedData)).to.equal(true));
+
+    const nestedList = TestUtils.renderIntoDocument(
+      <NestedList className="list" data={data} onDataChange={onDataChange}>
+        {item => <div className="list-item">{item.get('_id')}</div>}
+      </NestedList>
+    );
+
+    const itemDivs = TestUtils.scryRenderedDOMComponentsWithClass(nestedList, 'list-item');
+
+    TestUtils.Simulate.dragStart(itemDivs[2], {
+      dataTransfer: {
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
+    });
+    TestUtils.Simulate.drop(itemDivs[1], {
+      pageX: 30
+    });
+
+    expect(onDataChange).to.have.been.called.once();
+  });
+
+  it('moves with subitems 4', function () {
+    const data = Immutable.fromJS([
+      {_id: 1, children: []},
+      {
+        _id: 2, children: [
+          {_id: 3, children: []}
+        ]
+      }
+    ]);
+    const expectedData = Immutable.fromJS([
+      {
+        _id: 2, children: [
+          {_id: 3, children: []}
+        ]
+      },
+      {_id: 1, children: []}
+    ]);
+    const onDataChange = chai.spy(newData => expect(Immutable.is(newData, expectedData)).to.equal(true));
+
+    const nestedList = TestUtils.renderIntoDocument(
+      <NestedList className="list" data={data} onDataChange={onDataChange}>
+        {item => <div className="list-item">{item.get('_id')}</div>}
+      </NestedList>
+    );
+
+    const itemDivs = TestUtils.scryRenderedDOMComponentsWithClass(nestedList, 'list-item');
+
+    TestUtils.Simulate.dragStart(itemDivs[0], {
+      dataTransfer: {
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
+    });
+    TestUtils.Simulate.drop(itemDivs[2], {
+      pageX: 30
+    });
 
     expect(onDataChange).to.have.been.called.once();
   });
@@ -205,9 +318,11 @@ describe('NestedList', function () {
       {_id: 2, children: []}
     ]);
     const expectedData = Immutable.fromJS([
-      {_id: 1, children: [
-        {_id: 2, children: []}
-      ]}
+      {
+        _id: 1, children: [
+          {_id: 2, children: []}
+        ]
+      }
     ]);
     const onDataChange = chai.spy(newData => expect(Immutable.is(newData, expectedData)).to.equal(true));
 
@@ -220,11 +335,16 @@ describe('NestedList', function () {
     const itemDivs = TestUtils.scryRenderedDOMComponentsWithClass(nestedList, 'list-item');
 
     TestUtils.Simulate.dragStart(itemDivs[1], {
-      dataTransfer: {setData: () => {}, setDragImage: () => {}},
-      nativeEvent: {clientX: 10}
+      dataTransfer: {
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 10
     });
     TestUtils.Simulate.drop(itemDivs[1], {
-      nativeEvent: {clientX: 30}
+      pageX: 30
     });
 
     expect(onDataChange).to.have.been.called.once();
@@ -232,9 +352,11 @@ describe('NestedList', function () {
 
   it('unnests items', function () {
     const data = Immutable.fromJS([
-      {_id: 1, children: [
-        {_id: 2, children: []}
-      ]},
+      {
+        _id: 1, children: [
+          {_id: 2, children: []}
+        ]
+      },
       {_id: 3, children: []}
     ]);
     const expectedData = Immutable.fromJS([
@@ -253,17 +375,22 @@ describe('NestedList', function () {
     const itemDivs = TestUtils.scryRenderedDOMComponentsWithClass(nestedList, 'list-item');
 
     TestUtils.Simulate.dragStart(itemDivs[1], {
-      dataTransfer: {setData: () => {}, setDragImage: () => {}},
-      nativeEvent: {clientX: 30}
+      dataTransfer: {
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
     });
     TestUtils.Simulate.drop(itemDivs[1], {
-      nativeEvent: {clientX: 10}
+      pageX: 10
     });
 
     expect(onDataChange).to.have.been.called.once();
   });
 
-  it('does not change if validation fails', function () {
+  it('does not emit change if unchanged', function () {
     const data = Immutable.fromJS([
       {_id: 1, children: []},
       {_id: 2, children: []}
@@ -279,13 +406,61 @@ describe('NestedList', function () {
     const itemDivs = TestUtils.scryRenderedDOMComponentsWithClass(nestedList, 'list-item');
 
     TestUtils.Simulate.dragStart(itemDivs[0], {
-      dataTransfer: {setData: () => {}, setDragImage: () => {}},
-      nativeEvent: {clientX: 30}
+      dataTransfer: {
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
     });
     TestUtils.Simulate.drop(itemDivs[1], {
-      nativeEvent: {clientX: 10}
+      pageX: 10
     });
 
     expect(onDataChange).to.not.have.been.called();
+  });
+
+  it('does not move between lists', function () {
+    const data1 = Immutable.fromJS([
+      {_id: 1, children: []},
+      {_id: 2, children: []}
+    ]);
+    const onDataChange1 = chai.spy();
+    const data2 = Immutable.fromJS([
+      {_id: 3, children: []},
+      {_id: 4, children: []}
+    ]);
+    const onDataChange2 = chai.spy();
+
+    const nestedList = TestUtils.renderIntoDocument(
+      <div>
+        <NestedList className="list1" data={data1} onDataChange={onDataChange2}>
+          {item => <div className="list-item1">{item.get('_id')}</div>}
+        </NestedList>
+        <NestedList className="list2" data={data2} onDataChange={onDataChange2}>
+          {item => <div className="list-item2">{item.get('_id')}</div>}
+        </NestedList>
+      </div>
+    );
+
+    const item1Divs = nestedList.getElementsByClassName('list-item1');
+    const item2Divs = nestedList.getElementsByClassName('list-item2');
+
+    TestUtils.Simulate.dragStart(item1Divs[0], {
+      dataTransfer: {
+        setData: () => {
+        },
+        setDragImage: () => {
+        }
+      },
+      pageX: 30
+    });
+    TestUtils.Simulate.drop(item2Divs[0], {
+      pageX: 30
+    });
+
+    expect(onDataChange1).to.not.have.been.called();
+    expect(onDataChange2).to.not.have.been.called();
   });
 });

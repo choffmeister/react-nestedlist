@@ -10,7 +10,7 @@ test:
   post:
     # store testresult and coverage reports
     - cp -r reports/testresults/* $CIRCLE_TEST_REPORTS
-    - cp -r reports/coverage $CIRCLE_ARTIFACTS/coverage
+    - cp -r reports/coverage/PhantomJS* $CIRCLE_ARTIFACTS/coverage
 
 deployment:
   npm:
@@ -19,3 +19,14 @@ deployment:
       - echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
       - npm run dist
       - npm publish
+  gh-pages:
+    branch: develop
+    commands:
+      - npm run build
+      - npm install -g uglify-js
+      - uglifyjs -o build/app.js build/app.js
+      - uglifyjs -o build/vendor.js build/vendor.js
+      - echo -e "general:\n  branches:\n    ignore:\n      - gh-pages" > build/circle.yml
+      - git config --global user.name circleci
+      - git config --global user.email circleci@circleci.com
+      - cd build && git init && git add . && git commit -m gh-pages && git push git@github.com:choffmeister/react-nestedlist.git master:gh-pages --force

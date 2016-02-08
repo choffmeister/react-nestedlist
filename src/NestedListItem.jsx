@@ -1,3 +1,5 @@
+import * as nestedListUtils from './utils/nestedListUtils';
+import Immutable from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import React, {PropTypes} from 'react';
 
@@ -7,8 +9,7 @@ export default class NestedListItem extends React.Component {
   static get propTypes() {
     return {
       item: ImmutablePropTypes.map.isRequired,
-      onReorder: PropTypes.func.isRequired,
-      onReorderReset: PropTypes.func.isRequired,
+      list: PropTypes.any.isRequired,
       children: PropTypes.func.isRequired
     };
   }
@@ -19,47 +20,79 @@ export default class NestedListItem extends React.Component {
     this.onDragOver = this.onDragOver.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
     this.onDrop = this.onDrop.bind(this);
-
   }
 
   extractReorderParameters(event) {
-    const {clientX} = event.nativeEvent;
-    const {source} = dragData;
-    const target = this.props.item;
+    const {pageX} = event;
+    const {sourceList, sourceItem} = dragData;
+    const [targetList, targetItem] = [this.props.list, this.props.item];
 
-    if (source.get('_id') !== target.get('_id')) {
-      dragData.startLevel = this.props.item.get('__level');
-      dragData.startMouseX = clientX;
+    if (sourceItem.get('_id') !== targetItem.get('_id')) {
+      dragData.startLevel = Math.min(this.props.item.get('__level'), sourceItem.get('__level'));
+      dragData.startMouseX = pageX;
     }
-    const mouseDeltaX = clientX - dragData.startMouseX;
+    const mouseDeltaX = pageX - dragData.startMouseX;
 
-    return {source, target, level: dragData.startLevel + Math.floor(mouseDeltaX / 30 + 0.5) - 1};
+    return {
+      sourceList,
+      targetList,
+      sourceItem,
+      targetItem,
+      level: dragData.startLevel + Math.floor(mouseDeltaX / 30 + 0.5) - 1
+    };
+  }
+
+  onReorder(sourceList, targetList, sourceItem, targetItem, level, preview = false) {
+    if (sourceList === targetList) {
+      const newData = nestedListUtils.reorder(sourceList.state.data, sourceItem, targetItem, level);
+      const validation = !sourceList.props.validate || sourceList.props.validate(nestedListUtils.unwrap(newData), nestedListUtils.unwrap(sourceList.state.data));
+
+      if (preview) {
+        if (!Immutable.is(newData, sourceList.state.data)) {
+          if (validation === true) {
+            sourceList.preview(newData, sourceItem.get('_id'));
+          }
+        }
+      } else {
+        sourceList.persist(validation === true ? newData : undefined);
+      }
+    }
+  }
+
+  onReorderReset(sourceList, targetList) {
+    sourceList.reset();
+    targetList.reset();
   }
 
   onDragStart(event) {
     dragData = {
-      source: this.props.item,
-      startMouseX: event.nativeEvent.clientX,
+      sourceList: this.props.list,
+      sourceItem: this.props.item,
+      startMouseX: event.pageX,
       startLevel: this.props.item.get('__level')
     };
-    event.dataTransfer.setData('Url', '#');
-    event.dataTransfer.setDragImage(document.createElement('div'), 0, 0);
+
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('Url', '#');
+      event.dataTransfer.setDragImage(document.createElement('div'), 0, 0);
+    }
   }
 
   onDragOver(event) {
     event.preventDefault();
-    const {source, target, level} = this.extractReorderParameters(event);
-    this.props.onReorder(source, target, level, true);
+    const {sourceList, targetList, sourceItem, targetItem, level} = this.extractReorderParameters(event);
+    this.onReorder(sourceList, targetList, sourceItem, targetItem, level, true);
   }
 
-  onDragEnd() {
-    this.props.onReorderReset();
+  onDragEnd(event) {
+    const {sourceList, targetList} = this.extractReorderParameters(event);
+    this.onReorderReset(sourceList, targetList);
     dragData = null;
   }
 
   onDrop(event) {
-    const {source, target, level} = this.extractReorderParameters(event);
-    this.props.onReorder(source, target, level);
+    const {sourceList, targetList, sourceItem, targetItem, level} = this.extractReorderParameters(event);
+    this.onReorder(sourceList, targetList, sourceItem, targetItem, level);
   }
 
   render() {
