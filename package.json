@@ -1,6 +1,6 @@
 {
   "name": "react-nestedlist",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Editable nested lists for React.",
   "repository": "choffmeister/react-nestedlist",
   "license": "MIT",
