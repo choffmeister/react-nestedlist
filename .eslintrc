@@ -1,17 +1,17 @@
 {
+  "extends": "eslint:recommended",
   "env": {
-    "node": true,
-    "browser": true
+    "browser": true,
+    "es6": true
   },
   "ecmaFeatures": {
-    "arrowFunctions": true,
+    "modules": true,
+    "experimentalObjectRestSpread": true,
     "jsx": true
   },
-  "parser": "babel-eslint",
   "plugins": [
     "react"
   ],
-  "extends": "eslint:recommended",
   "rules": {
     "no-alert": 2,
     "no-console": 2,
