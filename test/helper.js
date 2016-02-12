@@ -1,4 +1,3 @@
-import extend from 'extend';
 import React from 'react';
 
 export function itCond(name, condition, test) {
@@ -13,6 +12,6 @@ export function itCond(name, condition, test) {
 export const PropsWrapper = React.createClass({
   render() {
     const {component, ...other} = this.props;
-    return React.createElement(component, extend({}, other, this.state));
+    return React.createElement(component, {...other, ...this.state});
   }
 });

@@ -1,11 +1,10 @@
 // configure test suite
-import chai from 'chai';
-import chaiSpies from 'chai-spies';
+import unexpected from 'unexpected';
+import unexpectedSinon from 'unexpected-sinon';
+import unexpectedImmutable from 'unexpected-immutable';
 
-chai.use(chaiSpies);
-
-window.chai = chai;
-window.expect = chai.expect;
+unexpected.use(unexpectedSinon);
+unexpected.use(unexpectedImmutable);
 
 // require source files
 const sourceContext = require.context('../src', true, /\.jsx?$/);

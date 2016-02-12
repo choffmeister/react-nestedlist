@@ -1,59 +1,64 @@
-/* eslint-disable no-var */
-var path = require('path');
-var webpack = require('webpack');
+/*eslint-env node*/
+'use strict';
 
-var dependencies = Object.keys(require('./package.json').dependencies);
+const path = require('path');
+const webpack = require('webpack');
 
-var generateConfig = function (host, port, hot) {
-  var config = {
-    context: path.join(__dirname, 'public'),
-    entry: {
-      javascript: './app.jsx',
-      html: './index.html',
-      vendor: dependencies
-    },
-    output: {
-      filename: 'app.js',
-      path: path.join(__dirname, 'build')
-    },
-    plugins: [
-      new webpack.optimize.CommonsChunkPlugin(/*chunkName= */'vendor', /* filename= */'vendor.js')
-    ],
-    module: {
-      loaders: [
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          loader: 'babel'
+const generateConfig = function (host, port, hot) {
+    const config = {
+        context: path.join(__dirname, 'public'),
+        entry: {
+            javascript: './app.jsx',
+            html: './index.html',
+            vendor: [
+                'immutable',
+                'react',
+                'react-dom',
+                'react-immutable-proptypes'
+            ]
         },
-        {
-          test: /\.html$/,
-          loader: 'file?name=[name].[ext]'
+        output: {
+            filename: 'app.js',
+            path: path.join(__dirname, 'build')
         },
-        {
-          test: /\.less$/,
-          loader: 'style!css?sourceMap!autoprefixer!less?sourceMap'
+        plugins: [
+            new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
+        ],
+        module: {
+            loaders: [
+                {
+                    test: /\.jsx?$/,
+                    exclude: /node_modules/,
+                    loader: 'babel'
+                },
+                {
+                    test: /\.html$/,
+                    loader: 'file?name=[name].[ext]'
+                },
+                {
+                    test: /\.less$/,
+                    loader: 'style!css!postcss!less'
+                }
+            ]
+        },
+        resolve: {
+            extensions: ['', '.js', '.jsx']
+        },
+        devtool: 'inline-source-map'
+    };
+
+    if (hot) {
+      config.plugins.unshift(new webpack.HotModuleReplacementPlugin());
+      Object.keys(config.entry).forEach(function (entryKey) {
+        if (!Array.isArray(config.entry[entryKey])) {
+          config.entry[entryKey] = [config.entry[entryKey]];
         }
-      ]
-    },
-    resolve: {
-      extensions: ['', '.js', '.jsx']
-    },
-    devtool: 'inline-source-map'
-  };
+        config.entry[entryKey].unshift('webpack-dev-server/client?http://' + host + ':' + port, 'webpack/hot/dev-server');
+      });
+    }
 
-  if (hot) {
-    config.plugins.unshift(new webpack.HotModuleReplacementPlugin());
-    Object.keys(config.entry).forEach(function (entryKey) {
-      if (!Array.isArray(config.entry[entryKey])) {
-        config.entry[entryKey] = [config.entry[entryKey]];
-      }
-      config.entry[entryKey].unshift('webpack-dev-server/client?http://' + host + ':' + port, 'webpack/hot/dev-server');
-    });
-  }
-
-  return config;
+    return config;
 };
 
-module.exports = generateConfig('localhost', 8081, false);
+module.exports = generateConfig('localhost', 8080, false);
 module.exports.generate = generateConfig;

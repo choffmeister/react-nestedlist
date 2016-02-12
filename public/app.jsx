@@ -1,5 +1,6 @@
 import data from './data';
-import NestedList from '../src/NestedList';
+import NestedList, {NestedListItem} from '../src/NestedList';
+import {flatMap} from '../src/utils/nestedListUtils';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -11,13 +12,11 @@ class App extends React.Component {
 
     this.updateTree1 = this.updateTree1.bind(this);
     this.updateTree2 = this.updateTree2.bind(this);
-    this.updateTree3 = this.updateTree3.bind(this);
     this.validateTree = this.validateTree.bind(this);
 
     this.state = {
       tree1: data('I'),
       tree2: data('II'),
-      tree3: data('III'),
       validationError: null
     };
   }
@@ -36,20 +35,16 @@ class App extends React.Component {
     this.setState({tree2: newTree});
   }
 
-  updateTree3(newTree) {
-    console.log('Updated tree 3', newTree.toJS()); // eslint-disable-line no-console
-    this.setState({tree3: newTree});
-  }
-
   validateTree(tree) {
-    const result = () => {
+    function validate() {
       if (tree.count() === 0) return 'Navigation must not be empty';
       if (tree.first().get('label') !== 'Startpage') return 'Startpage must be first';
       if (tree.first().get('children').count() > 0) return 'Startpage cannot have subpages';
 
       return true;
-    }();
+    }
 
+    const result = validate();
     if (result === true) {
       this.setState({validationError: null});
       return true;
@@ -63,42 +58,29 @@ class App extends React.Component {
     return (
       <div id="workspace">
         <div>
-          <NestedList
-            data={this.state.tree1}
-            onDataChange={this.updateTree1}
-            validate={this.validateTree}
-            className="list">
-            {(item, level, preview) => (
-              <div
-                style={{paddingLeft: (level - 1) * 20 + 10}}
-                className={'list-item' + (preview ? ' list-item-preview' : '')}>
-                {item.get('label')}
+          <NestedList data={this.state.tree1} onDataChange={this.updateTree1} validate={this.validateTree}>
+            {(items, draggedId) => (
+              <div className="list">
+                {flatMap(items, item => (
+                  <NestedListItem key={item.get('_id')} item={item}>
+                    <div style={{paddingLeft: (item.get('__level') - 1) * 20 + 10}} className={'list-item' + (draggedId === item.get('_id') ? ' list-item-preview' : '')}>
+                      {item.get('label')}
+                    </div>
+                  </NestedListItem>
+                ))}
               </div>
             )}
           </NestedList>
-          <NestedList
-            data={this.state.tree2}
-            onDataChange={this.updateTree2}
-            validate={this.validateTree}
-            className="list">
-            {(item, level, preview) => (
-              <div
-                style={{paddingLeft: (level - 1) * 20 + 10}}
-                className={'list-item' + (preview ? ' list-item-preview' : '')}>
-                {item.get('label')}
-              </div>
-            )}
-          </NestedList>
-          <NestedList
-            data={this.state.tree3}
-            onDataChange={this.updateTree3}
-            validate={this.validateTree}
-            className="list">
-            {(item, level, preview) => (
-              <div
-                style={{paddingLeft: (level - 1) * 20 + 10}}
-                className={'list-item' + (preview ? ' list-item-preview' : '')}>
-                {item.get('label')}
+          <NestedList data={this.state.tree2} onDataChange={this.updateTree2} validate={this.validateTree}>
+            {(items, draggedId) => (
+              <div className="list">
+                {flatMap(items, item => (
+                  <NestedListItem key={item.get('_id')} item={item}>
+                    <div style={{paddingLeft: (item.get('__level') - 1) * 20 + 10}} className={'list-item' + (draggedId === item.get('_id') ? ' list-item-preview' : '')}>
+                      {item.get('label')}
+                    </div>
+                  </NestedListItem>
+                ))}
               </div>
             )}
           </NestedList>
