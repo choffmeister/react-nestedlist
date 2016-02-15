@@ -19,7 +19,7 @@ describe('nestedListUtils', function () {
             const source = tree.get(0).get('children').get(0);
             const target = tree.get(0).get('children').get(0);
 
-            expect(Immutable.is(nestedListUtils.reorder(tree, source, target, 0), expectedTree), 'to equal', true);
+            expect(nestedListUtils.reorder(tree, source, target, 0), 'to equal', expectedTree);
         });
 
         it('swaps nodes (moves A to B where A has children)', function () {
@@ -46,7 +46,7 @@ describe('nestedListUtils', function () {
             const source = tree.get(0).get('children').get(0);
             const target = tree.get(0).get('children').get(1);
 
-            expect(Immutable.is(nestedListUtils.reorder(tree, source, target, 0), expectedTree), 'to equal', true);
+            expect(nestedListUtils.reorder(tree, source, target, 0), 'to equal', expectedTree);
         });
 
         it('moves A to B where B has children', function () {
@@ -69,7 +69,7 @@ describe('nestedListUtils', function () {
             const source = tree.get(0).get('children').get(0);
             const target = tree.get(0).get('children').get(1).get('children').get(0);
 
-            expect(Immutable.is(nestedListUtils.reorder(tree, source, target, 0), expectedTree), 'to equal', true);
+            expect(nestedListUtils.reorder(tree, source, target, 0), 'to equal', expectedTree);
         });
 
         it('nests A under it\'s sibling', function () {
@@ -96,7 +96,7 @@ describe('nestedListUtils', function () {
             const source = tree.get(0).get('children').get(1);
             const target = tree.get(0).get('children').get(1);
 
-            expect(Immutable.is(nestedListUtils.reorder(tree, source, target, 1), expectedTree), 'to equal', true);
+            expect(nestedListUtils.reorder(tree, source, target, 1), 'to equal', expectedTree);
         });
 
         it('nests A with children under it\'s sibling', function () {
@@ -124,7 +124,7 @@ describe('nestedListUtils', function () {
             const source = tree.get(0).get('children').get(0);
             const target = tree.get(0).get('children').get(1);
 
-            expect(Immutable.is(nestedListUtils.reorder(tree, source, target, 1), expectedTree), 'to equal', true);
+            expect(nestedListUtils.reorder(tree, source, target, 1), 'to equal', expectedTree);
         });
     });
 
