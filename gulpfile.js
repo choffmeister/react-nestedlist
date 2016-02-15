@@ -77,9 +77,9 @@ gulp.task('devserver', function (done) {
     });
     server.listen(port, host, function (err) {
         if (!err) {
-          gulpUtil.log('Listening on http://' + host + ':' + port + '. Running initial build...');
+            gulpUtil.log('Listening on http://' + host + ':' + port + '. Running initial build...');
         } else {
-          done(err);
+            done(err);
         }
     });
 });

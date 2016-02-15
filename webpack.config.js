@@ -48,13 +48,13 @@ const generateConfig = function (host, port, hot) {
     };
 
     if (hot) {
-      config.plugins.unshift(new webpack.HotModuleReplacementPlugin());
-      Object.keys(config.entry).forEach(function (entryKey) {
-        if (!Array.isArray(config.entry[entryKey])) {
-          config.entry[entryKey] = [config.entry[entryKey]];
-        }
-        config.entry[entryKey].unshift('webpack-dev-server/client?http://' + host + ':' + port, 'webpack/hot/dev-server');
-      });
+        config.plugins.unshift(new webpack.HotModuleReplacementPlugin());
+        Object.keys(config.entry).forEach(function (entryKey) {
+            if (!Array.isArray(config.entry[entryKey])) {
+                config.entry[entryKey] = [config.entry[entryKey]];
+            }
+            config.entry[entryKey].unshift('webpack-dev-server/client?http://' + host + ':' + port, 'webpack/hot/dev-server');
+        });
     }
 
     return config;

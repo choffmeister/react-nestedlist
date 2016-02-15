@@ -1,10 +1,10 @@
 // configure test suite
 import unexpected from 'unexpected';
-import unexpectedSinon from 'unexpected-sinon';
 import unexpectedImmutable from 'unexpected-immutable';
+import unexpectedSinon from 'unexpected-sinon';
 
-unexpected.use(unexpectedSinon);
 unexpected.use(unexpectedImmutable);
+unexpected.use(unexpectedSinon);
 
 // require source files
 const sourceContext = require.context('../src', true, /\.jsx?$/);

@@ -1,6 +1,6 @@
 import * as nestedListUtils from '../../../src/utils/nestedListUtils';
-import Immutable from 'immutable';
 import expect from 'unexpected';
+import Immutable from 'immutable';
 
 describe('nestedListUtils', function () {
     describe('reorder', function () {

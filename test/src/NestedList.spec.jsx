@@ -1,10 +1,10 @@
+import expect from 'unexpected';
 import Immutable from 'immutable';
+import React from 'react';
+import sinon from 'sinon';
+import TestUtils from 'react-addons-test-utils';
 import {flatMap, equals} from '../../src/utils/nestedListUtils';
 import NestedList, {NestedListItem} from '../../src/NestedList';
-import React from 'react'; // eslint-disable-line no-unused-vars
-import TestUtils from 'react-addons-test-utils';
-import expect from 'unexpected';
-import sinon from 'sinon';
 
 const renderNestedList = (data, onDataChange, className, validate) => (
     <NestedList data={data} onDataChange={onDataChange} validate={validate}>
